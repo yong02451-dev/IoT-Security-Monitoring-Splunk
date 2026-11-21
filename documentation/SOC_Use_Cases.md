@@ -11,6 +11,7 @@ index=rfid_auth (event_type="AUTH_SUCCESS" OR event_type="AUTH_FAILED")
 | timechart span=5m count by event_type
 ```
 
+**What a SOC Analyst Monitors:**
 - Successful card authentication.
 - Failed card authentication.
 - Changes in authentication activity over time.
