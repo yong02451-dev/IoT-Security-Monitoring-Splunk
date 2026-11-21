@@ -1,0 +1,13 @@
+
+# Search Name: Failed RFID Access Attempts
+# Purpose: Identify repeated unsuccessful RFID authentication attempts.
+# SOC Use Case: Detect potential unauthorized access attempts.
+# Data Source: Splunk index rfid_auth
+# Detection Threshold: More than 3 failed attempts within 5 minutes.
+
+index=rfid_auth event_type="AUTH_FAILED"
+| bin _time span=5m
+| stats count as failed_attempts by _time device
+| where failed_attempts > 3
+| table _time device failed_attempts
+| sort - failed_attempts

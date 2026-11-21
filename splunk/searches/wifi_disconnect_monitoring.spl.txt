@@ -1,0 +1,13 @@
+
+# Search Name: IoT Wi-Fi Disconnection Monitoring
+# Purpose: Detect repeated Wi-Fi disconnection events.
+# SOC Use Case: Identify network instability or possible connectivity attacks.
+# Data Source: Splunk index rfid_auth
+# Detection Threshold: 3 or more disconnect events within 1 minute.
+
+index=rfid_auth event_type="WIFI_DISCONNECTED"
+| bin _time span=1m
+| stats count as disconnect_count by _time device
+| where disconnect_count >= 3
+| table _time device disconnect_count
+| sort - disconnect_count

@@ -1,0 +1,14 @@
+
+# Search Name: IoT Device Health Monitoring
+# Purpose: Monitor the last heartbeat received from the NodeMCU.
+# SOC Use Case: Identify devices that stop sending telemetry.
+# Data Source: Splunk index rfid_auth
+# Heartbeat Interval: 30 seconds
+# Offline Threshold: 90 seconds
+
+index=rfid_auth event_type="DEVICE_HEARTBEAT" earliest=-24h
+| stats latest(_time) as last_heartbeat
+| eval seconds_since_heartbeat=round(now()-last_heartbeat,0)
+| eval device_status=if(seconds_since_heartbeat>90,"OFFLINE","ONLINE")
+| convert ctime(last_heartbeat)
+| table device_status last_heartbeat seconds_since_heartbeat
